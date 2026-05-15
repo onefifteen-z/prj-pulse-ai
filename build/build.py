@@ -81,6 +81,25 @@ H3_RE = re.compile(r"^### (.+)$", re.MULTILINE)
 META_RE = re.compile(r"^> (.+)$", re.MULTILINE)
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
+# Match a bare http(s) URL not already wrapped in markdown link / autolink
+# syntax (`[text](url)`, `<url>`) or an HTML attribute (`href="..."`).
+_BARE_URL_RE = re.compile(r"""(?<![<("'\[\]/=])(https?://\S+)""")
+_URL_TRAIL = ".,;:!?)]\"'>"
+
+
+def _autolink_bare_urls(text: str) -> str:
+    """Wrap bare http(s) URLs in `<…>` so Markdown emits anchor tags."""
+    def _wrap(m: re.Match[str]) -> str:
+        url = m.group(1)
+        trail = ""
+        while url and url[-1] in _URL_TRAIL:
+            trail = url[-1] + trail
+            url = url[:-1]
+        if not url:
+            return m.group(0)
+        return f"<{url}>{trail}"
+    return _BARE_URL_RE.sub(_wrap, text)
+
 # Pictographic / dingbat / variation-selector ranges. Used to strip the
 # decorative emoji that often prefix our `### ⭐ …` headings, while keeping
 # legitimate punctuation (`"`, `'`, `(`, digits, `—`) intact.
@@ -109,6 +128,8 @@ def parse_post(path: Path, source: dict[str, Any]) -> dict[str, Any]:
     # Tag bare inline <p>...</p> quote blocks so CSS can pull-quote them.
     # In our reports these always start at column 0 on their own line.
     body_md = re.sub(r"^<p>", '<p class="pulse-quote">', body_md, flags=re.MULTILINE)
+
+    body_md = _autolink_bare_urls(body_md)
 
     date_match = DATE_RE.search(path.stem)
     date_iso = date_match.group(1) if date_match else "1970-01-01"
