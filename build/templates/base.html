@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}{{ site_title }} — {{ site_tagline }}{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ site_tagline }}{% endblock %}">
+<meta name="generator" content="pulse-build">
+<link rel="alternate" type="application/rss+xml" title="Pulse · All sources" href="{{ site_url }}/feed.xml">
+{% block head_extra %}{% endblock %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,30..100;1,9..144,300..900,30..100&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ site_url }}/style.css">
+<meta property="og:title" content="{% block og_title %}{{ site_title }}{% endblock %}">
+<meta property="og:description" content="{% block og_description %}{{ site_tagline }}{% endblock %}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site_title }}">
+<script>
+  (function () {
+    var saved = localStorage.getItem("pulse-theme");
+    if (saved === "light" || saved === "dark") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <a class="wordmark" href="{{ site_url }}/" aria-label="Pulse home">
+      <span class="wordmark__pulse" aria-hidden="true">
+        <svg viewBox="0 0 240 28" preserveAspectRatio="none">
+          <path d="M0 14 H40 L48 4 L56 24 L64 14 L74 14 L82 8 L90 22 L100 14 H140 L148 6 L156 22 L164 14 H240"
+                fill="none" stroke="currentColor" stroke-width="1.4"
+                stroke-linejoin="round" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="wordmark__text">Pulse</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      {% for s in sources %}
+      <a href="{{ site_url }}/{{ s.slug }}/" class="nav__link nav__link--{{ s.slug }}">
+        <span class="nav__desk">{{ s.desk }}</span>
+      </a>
+      {% endfor %}
+      <a href="{{ site_url }}/feed.xml" class="nav__link nav__link--feed" aria-label="RSS feed">
+        <span class="nav__desk">RSS</span>
+      </a>
+      <button type="button" class="nav__toggle" aria-label="Toggle theme" data-theme-toggle>
+        <span aria-hidden="true">◐</span>
+      </button>
+    </nav>
+  </div>
+  <div class="masthead__rule" aria-hidden="true"></div>
+</header>
+
+<main id="main" class="page {% block page_class %}{% endblock %}">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__col">
+      <div class="footer__title">{{ site_title }}</div>
+      <p class="footer__tag">{{ site_tagline }}</p>
+    </div>
+    <div class="footer__col">
+      <div class="footer__title">Desks</div>
+      <ul>
+        {% for s in sources %}
+        <li><a href="{{ site_url }}/{{ s.slug }}/">{{ s.label }}</a> · <a class="footer__feed" href="{{ site_url }}/{{ s.slug }}/feed.xml">rss</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="footer__col">
+      <div class="footer__title">Subscribe</div>
+      <ul>
+        <li><a href="{{ site_url }}/feed.xml">Combined RSS</a></li>
+        <li><a href="https://github.com/onefifteen-z/prj-pulse-ai">Source on GitHub</a></li>
+      </ul>
+    </div>
+    <div class="footer__col footer__col--small">
+      <div class="footer__title">Generated</div>
+      <p class="footer__tag mono">{{ generated_at.strftime("%Y-%m-%d %H:%M %Z") }}</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.querySelector("[data-theme-toggle]");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var cur = document.documentElement.getAttribute("data-theme") || "dark";
+      var next = cur === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("pulse-theme", next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>

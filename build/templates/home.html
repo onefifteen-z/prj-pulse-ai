@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block page_class %}page--home{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__stamp mono">
+      <span>VOL · {{ generated_at.strftime("%Y") }}</span>
+      <span>·</span>
+      <span>{{ generated_at.strftime("%a · %b %d") | upper }}</span>
+    </div>
+    <h1 class="hero__title">
+      A daily intelligence brief
+      <em>on what's moving</em>
+      in artificial intelligence.
+    </h1>
+    <p class="hero__lede">
+      Three desks. One feed. Curated daily from
+      <span class="chip chip--x">X</span>
+      <span class="chip chip--hn">Hacker News</span>
+      <span class="chip chip--gh">GitHub</span> —
+      filtered for signal, summarized for skim, archived for permanence.
+    </p>
+    <div class="hero__rule" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section class="desks">
+  {% for s in sources %}
+    {% set posts = by_source[s.slug] %}
+    {% if posts %}
+      {% set latest = posts[0] %}
+      <article class="desk desk--{{ s.slug }}">
+        <header class="desk__header">
+          <div class="desk__label mono">{{ s.desk }}</div>
+          <div class="desk__count mono">№ {{ posts|length }}</div>
+        </header>
+        <a class="desk__latest" href="{{ latest.rel_url }}">
+          <div class="desk__date mono">{{ latest.iso_date }}</div>
+          <h2 class="desk__title">{{ latest.title }}</h2>
+          <p class="desk__meta mono">
+            {% if latest.meta_lines %}{{ latest.meta_lines[-1] }}{% endif %}
+          </p>
+          {% if latest.teaser_headings %}
+          <ul class="desk__teaser">
+            {% for h in latest.teaser_headings %}
+              <li>{{ h }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          <span class="desk__cta mono">Read brief →</span>
+        </a>
+        <p class="desk__blurb">{{ s.blurb }}</p>
+        <div class="desk__archive">
+          <a class="mono" href="{{ site_url }}/{{ s.slug }}/">All {{ posts|length }} briefs</a>
+          <a class="mono" href="{{ site_url }}/{{ s.slug }}/feed.xml">RSS</a>
+        </div>
+      </article>
+    {% endif %}
+  {% endfor %}
+</section>
+
+<section class="recent">
+  <header class="recent__header">
+    <div class="recent__rule" aria-hidden="true"></div>
+    <h2 class="recent__title">Recent transmissions</h2>
+    <div class="recent__rule" aria-hidden="true"></div>
+  </header>
+  <ol class="recent__list">
+    {% for p in recent %}
+      <li class="recent__item recent__item--{{ p.source.slug }}">
+        <a href="{{ p.rel_url }}">
+          <span class="recent__date mono">{{ p.iso_date }}</span>
+          <span class="recent__chip mono chip chip--{{ p.source.slug }}">{{ p.source.desk }}</span>
+          <span class="recent__title-link">{{ p.title }}</span>
+          {% if p.meta_lines %}
+          <span class="recent__meta mono">{{ p.meta_lines[-1] }}</span>
+          {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}

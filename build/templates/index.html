@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ source.label }} desk — {{ site_title }}{% endblock %}
+{% block og_title %}{{ source.label }} desk — {{ site_title }}{% endblock %}
+{% block page_class %}page--archive page--archive--{{ source.slug }}{% endblock %}
+
+{% block content %}
+<section class="archive-head">
+  <div class="archive-head__inner">
+    <div class="archive-head__label mono">{{ source.desk }}</div>
+    <h1 class="archive-head__title">
+      The {{ source.label }} desk.
+    </h1>
+    <p class="archive-head__blurb">{{ source.blurb }} {{ posts|length }} brief{{ "s" if posts|length != 1 else "" }} archived.</p>
+    <p class="archive-head__feed mono">
+      <a href="{{ feed_url }}">RSS · {{ source.slug }}/feed.xml</a>
+    </p>
+    <div class="archive-head__rule" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section class="archive">
+  <ol class="archive__list">
+    {% for p in posts %}
+      <li class="archive__item">
+        <a href="{{ p.rel_url }}">
+          <div class="archive__date mono">{{ p.iso_date }}</div>
+          <div class="archive__body">
+            <h2 class="archive__title">{{ p.title }}</h2>
+            {% if p.meta_lines %}
+            <p class="archive__meta mono">{{ p.meta_lines | join(" · ") }}</p>
+            {% endif %}
+            {% if p.teaser_headings %}
+            <ul class="archive__teaser">
+              {% for h in p.teaser_headings %}
+                <li>{{ h }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="archive__cta mono" aria-hidden="true">→</div>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}

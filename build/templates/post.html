@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — {{ site_title }}{% endblock %}
+{% block description %}{{ post.title }} · {{ post.meta_lines | join(" · ") if post.meta_lines else site_tagline }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.meta_lines | join(" · ") if post.meta_lines else site_tagline }}{% endblock %}
+{% block page_class %}page--post page--post--{{ post.source.slug }}{% endblock %}
+
+{% block head_extra %}
+<link rel="alternate" type="application/rss+xml" title="Pulse · {{ post.source.label }}" href="{{ site_url }}/{{ post.source.slug }}/feed.xml">
+{% endblock %}
+
+{% block content %}
+<article class="post">
+  <header class="post__head">
+    <div class="post__head-row mono">
+      <a class="post__chip chip chip--{{ post.source.slug }}" href="{{ site_url }}/{{ post.source.slug }}/">{{ post.source.desk }}</a>
+      <span class="post__date">{{ post.human_date }}</span>
+      <span class="post__sep">·</span>
+      <span class="post__filed">filed {{ post.iso_date }}</span>
+    </div>
+    <h1 class="post__title">{{ post.title }}</h1>
+    {% if post.meta_lines %}
+    <div class="post__lede">
+      {% for line in post.meta_lines %}
+        <p class="post__lede-line"><span class="post__lede-mark mono" aria-hidden="true">›</span>{{ line }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="post__rule" aria-hidden="true"></div>
+  </header>
+
+  <div class="post__layout">
+    {% if post.toc %}
+    <aside class="post__toc" aria-label="In this brief">
+      <div class="post__toc-label mono">In this brief</div>
+      <ol class="post__toc-list">
+        {% for top in post.toc %}
+          <li>
+            <a href="#{{ top.id }}" class="post__toc-top">{{ top.name | safe }}</a>
+            {% if top.children %}
+            <ol>
+              {% for child in top.children %}
+                <li><a href="#{{ child.id }}">{{ child.name | safe }}</a></li>
+              {% endfor %}
+            </ol>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </aside>
+    {% endif %}
+
+    <div class="post__body prose">
+      {{ post.html | safe }}
+    </div>
+  </div>
+
+  <nav class="post__nav mono" aria-label="Adjacent briefs">
+    {% if post.next %}
+    <a class="post__nav-link post__nav-link--next" href="{{ post.next.rel_url }}">
+      <span class="post__nav-arrow">←</span>
+      <span class="post__nav-label">Next brief</span>
+      <span class="post__nav-title">{{ post.next.iso_date }} · {{ post.next.title }}</span>
+    </a>
+    {% endif %}
+    {% if post.prev %}
+    <a class="post__nav-link post__nav-link--prev" href="{{ post.prev.rel_url }}">
+      <span class="post__nav-arrow">→</span>
+      <span class="post__nav-label">Earlier brief</span>
+      <span class="post__nav-title">{{ post.prev.iso_date }} · {{ post.prev.title }}</span>
+    </a>
+    {% endif %}
+  </nav>
+</article>
+{% endblock %}
