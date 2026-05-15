@@ -12,7 +12,7 @@
     </h1>
     <p class="archive-head__blurb">{{ source.blurb }} {{ posts|length }} brief{{ "s" if posts|length != 1 else "" }} archived.</p>
     <p class="archive-head__feed mono">
-      <a href="{{ feed_url }}">RSS · {{ source.slug }}/feed.xml</a>
+      <a href="{{ base_url }}/{{ source.slug }}/feed.xml">RSS · {{ source.slug }}/feed.xml</a>
     </p>
     <div class="archive-head__rule" aria-hidden="true"></div>
   </div>

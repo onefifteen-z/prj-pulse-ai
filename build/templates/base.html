@@ -8,10 +8,11 @@
 <meta name="generator" content="pulse-build">
 <link rel="alternate" type="application/rss+xml" title="Pulse · All sources" href="{{ site_url }}/feed.xml">
 {% block head_extra %}{% endblock %}
+<link rel="icon" type="image/svg+xml" href="{{ base_url }}/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,30..100;1,9..144,300..900,30..100&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ site_url }}/style.css">
+<link rel="stylesheet" href="{{ base_url }}/style.css">
 <meta property="og:title" content="{% block og_title %}{{ site_title }}{% endblock %}">
 <meta property="og:description" content="{% block og_description %}{{ site_tagline }}{% endblock %}">
 <meta property="og:type" content="website">
@@ -31,7 +32,7 @@
 
 <header class="masthead">
   <div class="masthead__inner">
-    <a class="wordmark" href="{{ site_url }}/" aria-label="Pulse home">
+    <a class="wordmark" href="{{ base_url }}/" aria-label="Pulse home">
       <span class="wordmark__pulse" aria-hidden="true">
         <svg viewBox="0 0 240 28" preserveAspectRatio="none">
           <path d="M0 14 H40 L48 4 L56 24 L64 14 L74 14 L82 8 L90 22 L100 14 H140 L148 6 L156 22 L164 14 H240"
@@ -43,11 +44,11 @@
     </a>
     <nav class="nav" aria-label="Sections">
       {% for s in sources %}
-      <a href="{{ site_url }}/{{ s.slug }}/" class="nav__link nav__link--{{ s.slug }}">
+      <a href="{{ base_url }}/{{ s.slug }}/" class="nav__link nav__link--{{ s.slug }}">
         <span class="nav__desk">{{ s.desk }}</span>
       </a>
       {% endfor %}
-      <a href="{{ site_url }}/feed.xml" class="nav__link nav__link--feed" aria-label="RSS feed">
+      <a href="{{ base_url }}/feed.xml" class="nav__link nav__link--feed" aria-label="RSS feed">
         <span class="nav__desk">RSS</span>
       </a>
       <button type="button" class="nav__toggle" aria-label="Toggle theme" data-theme-toggle>
@@ -72,14 +73,14 @@
       <div class="footer__title">Desks</div>
       <ul>
         {% for s in sources %}
-        <li><a href="{{ site_url }}/{{ s.slug }}/">{{ s.label }}</a> · <a class="footer__feed" href="{{ site_url }}/{{ s.slug }}/feed.xml">rss</a></li>
+        <li><a href="{{ base_url }}/{{ s.slug }}/">{{ s.label }}</a> · <a class="footer__feed" href="{{ base_url }}/{{ s.slug }}/feed.xml">rss</a></li>
         {% endfor %}
       </ul>
     </div>
     <div class="footer__col">
       <div class="footer__title">Subscribe</div>
       <ul>
-        <li><a href="{{ site_url }}/feed.xml">Combined RSS</a></li>
+        <li><a href="{{ base_url }}/feed.xml">Combined RSS</a></li>
         <li><a href="https://github.com/onefifteen-z/prj-pulse-ai">Source on GitHub</a></li>
       </ul>
     </div>

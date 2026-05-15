@@ -53,8 +53,8 @@
         </a>
         <p class="desk__blurb">{{ s.blurb }}</p>
         <div class="desk__archive">
-          <a class="mono" href="{{ site_url }}/{{ s.slug }}/">All {{ posts|length }} briefs</a>
-          <a class="mono" href="{{ site_url }}/{{ s.slug }}/feed.xml">RSS</a>
+          <a class="mono" href="{{ base_url }}/{{ s.slug }}/">All {{ posts|length }} briefs</a>
+          <a class="mono" href="{{ base_url }}/{{ s.slug }}/feed.xml">RSS</a>
         </div>
       </article>
     {% endif %}

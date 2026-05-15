@@ -9,7 +9,9 @@ Dependencies: markdown, jinja2 (see build/requirements.txt).
 """
 from __future__ import annotations
 
+import argparse
 import datetime as dt
+import os
 import re
 import shutil
 import sys
@@ -17,7 +19,6 @@ import xml.etree.ElementTree as ET
 from email.utils import format_datetime
 from pathlib import Path
 from typing import Any
-from xml.sax.saxutils import escape as xml_escape
 
 import markdown as md_lib
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -28,7 +29,15 @@ OUT = ROOT / "docs"
 TEMPLATES = ROOT / "build" / "templates"
 ASSETS = ROOT / "build" / "assets"
 
+# Production deployment is a GitHub Pages project site, served under
+# `/prj-pulse-ai/`. SITE_URL is the canonical absolute URL (used in RSS,
+# Open Graph, and canonical alternates regardless of build mode).
+# BASE_URL is the path prefix used by all *internal* navigation/asset links;
+# it gets cleared with `--dev` so a local `python -m http.server -d docs`
+# resolves `/style.css` and `/x/...` correctly.
 SITE_URL = "https://onefifteen-z.github.io/prj-pulse-ai"
+DEFAULT_BASE_URL = "/prj-pulse-ai"
+BASE_URL = DEFAULT_BASE_URL
 SITE_TITLE = "Pulse"
 SITE_TAGLINE = "Daily AI signals from X, Hacker News & GitHub"
 SITE_AUTHOR = "onefifteen-z"
@@ -119,8 +128,9 @@ def parse_post(path: Path, source: dict[str, Any]) -> dict[str, Any]:
     html = md.convert(body_md)
     toc = getattr(md, "toc_tokens", []) or []
 
-    rel_url = f"/{source['slug']}/{path.stem}.html"
-    abs_url = SITE_URL + rel_url
+    href_path = f"/{source['slug']}/{path.stem}.html"
+    rel_url = f"{BASE_URL}{href_path}"
+    abs_url = SITE_URL + href_path
 
     return {
         "title": raw_title,
@@ -163,6 +173,7 @@ def render_site(by_source: dict[str, list[dict[str, Any]]]) -> None:
     )
     env.globals.update(
         site_url=SITE_URL,
+        base_url=BASE_URL,
         site_title=SITE_TITLE,
         site_tagline=SITE_TAGLINE,
         sources=list(SOURCES.values()),
@@ -282,7 +293,26 @@ def write_feed(
     )
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Build the Pulse static site.")
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Build for local preview (no /prj-pulse-ai path prefix on internal links).",
+    )
+    parser.add_argument(
+        "--base-url",
+        default=os.environ.get("PULSE_BASE_URL"),
+        help="Override base URL prefix (e.g. ''). Takes precedence over --dev.",
+    )
+    args = parser.parse_args(argv)
+
+    global BASE_URL
+    if args.base_url is not None:
+        BASE_URL = args.base_url
+    elif args.dev:
+        BASE_URL = ""
+
     if not SRC.exists():
         print(f"missing source dir: {SRC}", file=sys.stderr)
         return 1
@@ -292,7 +322,8 @@ def main() -> int:
         print("no markdown files found in inbox/*", file=sys.stderr)
         return 1
     render_site(posts)
-    print(f"built {total} posts → {OUT.relative_to(ROOT)}")
+    mode = "dev" if not BASE_URL else f"prod base={BASE_URL!r}"
+    print(f"built {total} posts → {OUT.relative_to(ROOT)} ({mode})")
     for slug, ps in posts.items():
         print(f"  {slug}: {len(ps)} posts (latest {ps[0]['stem']})")
     return 0
