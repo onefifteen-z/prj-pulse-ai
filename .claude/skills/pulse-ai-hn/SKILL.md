@@ -287,12 +287,7 @@ Otherwise fallback to pure skill implementation.
 
 ## Relationship with pulse-ai
 
-This is the Hacker News module.
+This is the Hacker News module. Callable standalone via `/pulse-ai-hn` or as
+part of `/pulse-ai` (parent orchestrator: fetch all desks, build site, publish).
 
-Future integration:
-
-- pulse-ai-github (repos)
-- pulse-ai-hn (discussion)
-- pulse-ai-twitter (early signals)
-
-Combined → full AI intelligence pipeline
+Sibling skills: `pulse-ai-github`, `pulse-ai-x`, `pulse-ai`.

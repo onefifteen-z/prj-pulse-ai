@@ -272,17 +272,16 @@ This skill is the GitHub data source module of the `pulse-ai` project.
 - User triggers via `/pulse-ai-github`
 - Output is Markdown to `inbox/github-trending/<this-monday>.md` for the user to read
 
-**Called by the parent `pulse-ai` skill** (future):
+**Called by the parent `pulse-ai` skill** (`/pulse-ai`):
 
-- Parent skill specifies a different output dir (e.g. `pulse-ai/inbox/`)
-- Parent skill decides whether JSON output is needed (extend later if so)
+- Parent runs this skill with default `inbox/github-trending/` output
+- Pass `--force` on `/pulse-ai` to skip the existence check and overwrite
 
-Sibling skills (planned):
+Sibling skills:
 
 - `pulse-ai-hn`: Hacker News
-- `pulse-ai-arxiv`: arxiv AI categories
-- `pulse-ai-twitter`: Twitter (via Browser MCP)
-- `pulse-ai-rss`: generic RSS
+- `pulse-ai-x`: X (Twitter)
+- `pulse-ai`: orchestrator (fetch all + build + publish)
 
 ## Example interactions
 

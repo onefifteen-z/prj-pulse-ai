@@ -320,8 +320,7 @@ Use Python to:
 
 ## Relationship with pulse-ai
 
-- GitHub → implementation signals
-- Hacker News → discussion signals
-- X → early signals
+X is the early-signal desk. Callable standalone via `/pulse-ai-x` or as part
+of `/pulse-ai` (parent orchestrator: fetch all desks, build site, publish).
 
-Combined → AI intelligence system
+Sibling skills: `pulse-ai-github`, `pulse-ai-hn`, `pulse-ai`.
